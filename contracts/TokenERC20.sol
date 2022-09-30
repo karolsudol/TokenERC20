@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+/**
+ * @dev implementation of the ERC20 standard as defined in the EIP-20.
+ *  https://eips.ethereum.org/EIPS/eip-20
+ * + burn()
+ * + mint()
+ */
 contract TokenERC20 {
     /**
      * **** PRIVATE STATE VARIABLES ****

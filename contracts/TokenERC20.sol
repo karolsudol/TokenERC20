@@ -148,11 +148,9 @@ contract TokenERC20 {
         public
         returns (bool success)
     {
-        success = false;
         address owner = msg.sender;
         _transfer(owner, to, amount);
-        success = true;
-        return success;
+        return true;
     }
 
     /**

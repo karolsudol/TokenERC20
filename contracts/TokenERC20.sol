@@ -20,6 +20,8 @@ contract TokenERC20 {
     string private _name;
     string private _symbol;
 
+    address payable public contractowner;
+
     /**
      * **** EVENTS ****
      */
@@ -66,6 +68,7 @@ contract TokenERC20 {
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
+        contractowner = payable(msg.sender);
     }
 
     /**

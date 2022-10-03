@@ -86,6 +86,12 @@ describe("CONTRACT:TokenERC20", function () {
         tkn.decreaseAllowance(ZERO_ADDRESS, TOTAL_SUPPLY)
       ).to.be.revertedWith("ERC20: zero address");
     });
+
+    it("Should transfer from contract correctly", async function () {
+      const { tkn, owner, acc1 } = await loadFixture(deployTokenERC20);
+
+ 
+    });
   });
 });
 

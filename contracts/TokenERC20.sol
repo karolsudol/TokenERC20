@@ -16,11 +16,10 @@ contract TokenERC20 {
     mapping(address => mapping(address => uint256)) private _allowances;
 
     uint256 private _totalSupply;
-
     string private _name;
     string private _symbol;
-
-    address payable public contractowner;
+    address payable public _contractOwner;
+    uint256 private _decimals = 18;
 
     /**
      * **** EVENTS ****
@@ -68,7 +67,14 @@ contract TokenERC20 {
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
-        contractowner = payable(msg.sender);
+        _contractOwner = payable(msg.sender);
+        _totalSupply = 1000; // set initial supply from get go
+        _balances[_contractOwner] = _totalSupply;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == _contractOwner, "only owner");
+        _;
     }
 
     /**
@@ -100,8 +106,8 @@ contract TokenERC20 {
      * overridden;
      *
      */
-    function decimals() public pure returns (uint8) {
-        return 18;
+    function decimals() public view returns (uint256) {
+        return _decimals;
     }
 
     /**
@@ -124,13 +130,18 @@ contract TokenERC20 {
      * zero by default.
      *
      * This value changes when {approve} or {transferFrom} are called.
+     *
+     * @param _owner contracts address
+     * @param _spender spenders addres
+     *
+     * @return an uint256 token value indicating the allowance granted
      */
-    function allowance(address owner, address spender)
+    function allowance(address _owner, address _spender)
         public
         view
         returns (uint256)
     {
-        return _allowances[owner][spender];
+        return _allowances[_owner][_spender];
     }
 
     /**
@@ -140,19 +151,29 @@ contract TokenERC20 {
     /**
      * @dev Moves `amount` tokens from the caller's account to `to`.
      *
-     * Returns a boolean value indicating whether the operation succeeded.
+     * @param _to receipent address
+     * @param _to _amount to be transfered
+     *
+     * @return a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
      *
      * Requirements:
      *
      * - `to` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address to, uint256 amount)
-        public
-        returns (bool success)
-    {
-        address owner = msg.sender;
-        _transfer(owner, to, amount);
+    function transfer(address _to, uint256 _amount) public returns (bool) {
+        require(
+            _balances[msg.sender] >= _amount,
+            "sender's funds insufficient"
+        );
+        require(_to != address(0), "zero address");
+
+        _balances[msg.sender] -= _amount;
+        _balances[_to] += _amount;
+
+        emit Transfer(msg.sender, _to, _amount);
         return true;
     }
 
@@ -164,10 +185,8 @@ contract TokenERC20 {
      * @param _spender The address authorized to spend
      * @param _value the max amount they can spend
      */
-    function approve(address _spender, uint256 _value)
-        public
-        returns (bool success)
-    {
+    function approve(address _spender, uint256 _value) public returns (bool) {
+        require(_spender != address(0), "ERC20: zero address");
         _allowances[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
         return true;
@@ -180,17 +199,109 @@ contract TokenERC20 {
      *
      * @param _from The address of the sender
      * @param _to The address of the recipient
-     * @param _value the amount to send
+     * @param _amount the amount to send
+     *
+     * @return bool if succeded
+     *
+     * Emits a {Transfer} event.
      */
     function transferFrom(
         address _from,
         address _to,
-        uint256 _value
-    ) public returns (bool success) {
-        require(_value <= _allowances[_from][msg.sender]); // Check allowance
-        _allowances[_from][msg.sender] -= _value;
-        _transfer(_from, _to, _value);
+        uint256 _amount
+    ) public returns (bool) {
+        require(_balances[_from] > _amount, "sender's balance insufficient");
+        require(
+            _allowances[_from][msg.sender] >= _amount,
+            "receipient's allowance insufficient"
+        );
+
+        _allowances[_from][msg.sender] -= _amount;
+        _balances[_from] -= _amount;
+        _balances[_to] += _amount;
+
+        emit Transfer(_from, _to, _amount);
         return true;
+    }
+
+    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
+     * the total supply.
+     *
+     * Emits a {Transfer} event with `from` set to the zero address.
+     *
+     * Requirements:
+     *
+     * - `account` cannot be the zero address.
+     */
+    function _mint(address account, uint256 amount)
+        public
+        onlyOwner
+        returns (bool)
+    {
+        require(account != address(0), "ERC20: zero address");
+
+        _totalSupply += amount;
+        unchecked {
+            // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
+            _balances[account] += amount;
+        }
+        emit Transfer(address(0), account, amount);
+        return true;
+    }
+
+    /**
+     * Destroy tokens
+     *
+     * Remove `_value` tokens from the system irreversibly
+     *
+     * @param _account the account address which tokens will be deleted from
+     * @param _amount the amount of money to burn
+     */
+    function burn(address _account, uint256 _amount)
+        public
+        onlyOwner
+        returns (bool)
+    {
+        require(
+            _balances[_account] >= _amount,
+            "The balance is less than burning amount"
+        );
+
+        _balances[_account] -= _amount;
+        _totalSupply -= _amount;
+        emit Transfer(_account, address(0), _amount);
+
+        return true;
+    }
+
+    /**
+     * **** INTERNAL STATE CHANGING FUNCIONS *****
+     * @dev TBD implement approve and transfer internal to external funcs
+     */
+
+    /**
+     * @dev Set allowance for other address
+     *
+     * @dev Allows `_spender` to spend no more than `_amount` tokens on your behalf
+     *
+     * @param _spender The address authorized to spend
+     * @param _amount the max amount they can spend
+     *
+     * Emits a {Approval} event.
+     *
+     * Requirements:
+     *
+     * - `to` cannot be the zero address.
+     */
+    function _approve(
+        address _owner,
+        address _spender,
+        uint256 _amount
+    ) internal {
+        require(_spender != address(0), "ERC20: zero address");
+
+        _allowances[_owner][_spender] = _amount;
+        emit Approval(_owner, _spender, _amount);
     }
 
     /**
@@ -229,40 +340,5 @@ contract TokenERC20 {
         emit Transfer(_from, _to, _value);
         // Asserts are used to use static analysis to find bugs in your code. They should never fail
         assert(_balances[_from] + _balances[_to] == previousBalances);
-    }
-
-    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
-     * the total supply.
-     *
-     * Emits a {Transfer} event with `from` set to the zero address.
-     *
-     * Requirements:
-     *
-     * - `account` cannot be the zero address.
-     */
-    function _mint(address account, uint256 amount) public {
-        require(account != address(0), "ERC20: mint to the zero address");
-
-        _totalSupply += amount;
-        unchecked {
-            // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
-            _balances[account] += amount;
-        }
-        emit Transfer(address(0), account, amount);
-    }
-
-    /**
-     * Destroy tokens
-     *
-     * Remove `_value` tokens from the system irreversibly
-     *
-     * @param _value the amount of money to burn
-     */
-    function burn(uint256 _value) public returns (bool success) {
-        require(_balances[msg.sender] >= _value); // Check if the sender has enough
-        _balances[msg.sender] -= _value; // Subtract from the sender
-        _totalSupply -= _value; // Updates totalSupply
-        emit Burn(msg.sender, _value);
-        return true;
     }
 }

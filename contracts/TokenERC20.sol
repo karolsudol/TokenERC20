@@ -192,6 +192,31 @@ contract TokenERC20 {
         return true;
     }
 
+    function increaseAllowance(address spender, uint256 amount)
+        public
+        returns (bool)
+    {
+        _approve(
+            msg.sender,
+            spender,
+            _allowances[msg.sender][spender] + amount
+        );
+
+        return true;
+    }
+
+    function decreaseAllowance(address spender, uint256 amount)
+        public
+        returns (bool)
+    {
+        uint256 currentAllowance = _allowances[msg.sender][spender];
+        require(currentAllowance >= amount, "ERC20: amount below zero");
+
+        _approve(msg.sender, spender, currentAllowance - amount);
+
+        return true;
+    }
+
     /**
      * Transfer tokens from other address
      *

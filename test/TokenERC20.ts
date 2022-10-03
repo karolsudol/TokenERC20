@@ -48,7 +48,11 @@ describe("CONTRACT:TokenERC20", function () {
   });
 
   describe("TRANSFERS", function () {
-    it("Should be able to increase allowance", async function () {
+    it("Should be able to do transfers between accounts correctly", async function () {
+      const { tkn, owner, acc1, acc2 } = await loadFixture(deployTokenERC20);
+    });
+
+    it("Should be able to in-crease allowance correctly", async function () {
       const { tkn, owner, acc1 } = await loadFixture(deployTokenERC20);
       const allowance_0 = await tkn.allowance(owner.address, acc1.address);
 
@@ -63,27 +67,25 @@ describe("CONTRACT:TokenERC20", function () {
       expect(
         tkn.increaseAllowance(ZERO_ADDRESS, TOTAL_SUPPLY)
       ).to.be.revertedWith("ERC20: zero address");
-
-      // const tokensToSend = ethers.utils.parseEther("10");
-
-      // tkn.transfer(acc1.address, tokensToSend);
-      // expect(await tkn.balanceOf(acc1.address)).to.equal(tokensToSend);
     });
-    // it("Should be able to transfer tokens successfully to an address", async function () {
-    //   const tokensToSend = ethers.utils.parseEther("10");
-    //   const { tkn, acc1 } = await loadFixture(deployTokenERC20);
-    //   tkn.transfer(acc1.address, tokensToSend);
-    //   expect(await tkn.balanceOf(acc1.address)).to.equal(tokensToSend);
-    // });
 
-    // it("emits a transfer event, when an transfer occurs", async function () {
-    //   const tokensToSend = ethers.utils.parseEther("10");
-    //   const { tkn, acc1, owner } = await loadFixture(deployTokenERC20);
+    it("Should be able to de-crease allowance correctly", async function () {
+      const { tkn, owner, acc1 } = await loadFixture(deployTokenERC20);
+      const allowance_0 = await tkn.allowance(owner.address, acc1.address);
+      const allowance_100 = await tkn.increaseAllowance(acc1.address, 100);
 
-    //   expect(await tkn.transfer(acc1.address, tokensToSend))
-    //     .to.emit(tkn, "Transfer")
-    //     .withArgs(owner.address, acc1.address, tokensToSend);
-    // });
+      expect(await tkn.decreaseAllowance(acc1.address, 50))
+        .emit(tkn, "Approval")
+        .withArgs(owner.address, acc1.address, TOTAL_SUPPLY - 100);
+
+      expect(await tkn.allowance(owner.address, acc1.address)).equal(
+        allowance_0.add(50)
+      );
+
+      expect(
+        tkn.decreaseAllowance(ZERO_ADDRESS, TOTAL_SUPPLY)
+      ).to.be.revertedWith("ERC20: zero address");
+    });
   });
 });
 
@@ -97,4 +99,25 @@ describe("CONTRACT:TokenERC20", function () {
 //       expect(await tkn.allowance()).to.equal(tokensToSend);
 //     });
 //   });
+// });
+
+// const tokensToSend = ethers.utils.parseEther("10");
+
+// tkn.transfer(acc1.address, tokensToSend);
+// expect(await tkn.balanceOf(acc1.address)).to.equal(tokensToSend);
+
+// it("Should be able to transfer tokens successfully to an address", async function () {
+//   const tokensToSend = ethers.utils.parseEther("10");
+//   const { tkn, acc1 } = await loadFixture(deployTokenERC20);
+//   tkn.transfer(acc1.address, tokensToSend);
+//   expect(await tkn.balanceOf(acc1.address)).to.equal(tokensToSend);
+// });
+
+// it("emits a transfer event, when an transfer occurs", async function () {
+//   const tokensToSend = ethers.utils.parseEther("10");
+//   const { tkn, acc1, owner } = await loadFixture(deployTokenERC20);
+
+//   expect(await tkn.transfer(acc1.address, tokensToSend))
+//     .to.emit(tkn, "Transfer")
+//     .withArgs(owner.address, acc1.address, tokensToSend);
 // });

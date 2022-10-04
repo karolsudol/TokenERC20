@@ -87,6 +87,22 @@ describe("CONTRACT:TokenERC20", function () {
       ).to.be.revertedWith("ERC20: zero address");
     });
 
+    it("Should approve correctly", async function () {
+      const { tkn, owner, acc1, acc2 } = await loadFixture(deployTokenERC20);
+      const allowance = await tkn.allowance(acc1.address, acc2.address);
+
+      // 1. revert for zero address
+      await expect(
+        tkn.connect(owner).approve(ZERO_ADDRESS, 100)
+      ).to.be.revertedWith("ERC20: zero address");
+
+      // 2. approve
+      await tkn.connect(acc1).approve(acc2.address, 100);
+      expect(await tkn.allowance(acc1.address, acc2.address)).to.equal(
+        allowance.add(100)
+      );
+    });
+
     it("Should transfer to/from address correctly", async function () {
       const { tkn, owner, acc1 } = await loadFixture(deployTokenERC20);
 
@@ -166,6 +182,11 @@ describe("CONTRACT:TokenERC20", function () {
       await expect(tkn.mint(ZERO_ADDRESS, 100)).to.be.revertedWith(
         "ERC20: zero address"
       );
+
+      await expect(
+        tkn.connect(acc1).mint(acc1.address, 100)
+      ).to.be.revertedWith("only owner");
+
       // 2. Mint Event
       await expect(tkn.mint(acc1.address, 100))
         .to.emit(tkn, "Mint")

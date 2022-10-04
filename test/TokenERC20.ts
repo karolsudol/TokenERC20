@@ -154,6 +154,18 @@ describe("CONTRACT:TokenERC20", function () {
       );
     });
   });
+
+  describe("MINT-BURN", function () {
+    it("Should mint correctly", async function () {
+      const { tkn } = await loadFixture(deployTokenERC20);
+      expect(await tkn.name()).to.equal(NAME);
+    });
+
+    it("Should burn correctly", async function () {
+      const { tkn } = await loadFixture(deployTokenERC20);
+      expect(await tkn.symbol()).to.equal(SYMBOL);
+    });
+  });
 });
 
 // describe("DECREASE-ALLOWANCE", function () {

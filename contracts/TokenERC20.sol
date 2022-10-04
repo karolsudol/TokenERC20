@@ -42,6 +42,13 @@ contract TokenERC20 {
     event Burn(address indexed from, uint256 value);
 
     /**
+     * @dev Emitted when `value` tokens are created and allocated to account
+     *
+     * Note that `value` may be zero.
+     */
+    event Mint(address indexed to, uint256 value);
+
+    /**
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
@@ -258,7 +265,7 @@ contract TokenERC20 {
      *
      * - `account` cannot be the zero address.
      */
-    function _mint(address account, uint256 amount)
+    function mint(address account, uint256 amount)
         public
         onlyOwner
         returns (bool)
@@ -270,7 +277,7 @@ contract TokenERC20 {
             // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
             _balances[account] += amount;
         }
-        emit Transfer(address(0), account, amount);
+        emit Mint(account, amount);
         return true;
     }
 
@@ -287,14 +294,11 @@ contract TokenERC20 {
         onlyOwner
         returns (bool)
     {
-        require(
-            _balances[_account] >= _amount,
-            "The balance is less than burning amount"
-        );
+        require(_balances[_account] >= _amount, "insufficient balance");
 
         _balances[_account] -= _amount;
         _totalSupply -= _amount;
-        emit Transfer(_account, address(0), _amount);
+        emit Burn(_account, _amount);
 
         return true;
     }

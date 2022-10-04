@@ -157,14 +157,29 @@ describe("CONTRACT:TokenERC20", function () {
 
   describe("MINT-BURN", function () {
     it("Should mint correctly", async function () {
-      const { tkn } = await loadFixture(deployTokenERC20);
-      expect(await tkn.name()).to.equal(NAME);
+      const { tkn, owner, acc1 } = await loadFixture(deployTokenERC20);
+
+      const acc1Balance = await tkn.balanceOf(acc1.address);
+      const totalSupply = await tkn.totalSupply();
+
+      // 1. revert for zero-address
+      await expect(tkn.mint(ZERO_ADDRESS, 100)).to.be.revertedWith(
+        "ERC20: zero address"
+      );
+      // 2. Mint Event
+      await expect(tkn.mint(acc1.address, 100))
+        .to.emit(tkn, "Mint")
+        .withArgs(acc1.address, 100);
+
+      // 3. compare balances: before and after
+      expect(await tkn.balanceOf(acc1.address)).to.equal(acc1Balance.add(100));
+      expect(await tkn.totalSupply()).to.equal(totalSupply.add(100));
     });
 
-    it("Should burn correctly", async function () {
-      const { tkn } = await loadFixture(deployTokenERC20);
-      expect(await tkn.symbol()).to.equal(SYMBOL);
-    });
+    // it("Should burn correctly", async function () {
+    //   const { tkn } = await loadFixture(deployTokenERC20);
+    //   expect(await tkn.symbol()).to.equal(SYMBOL);
+    // });
   });
 });
 

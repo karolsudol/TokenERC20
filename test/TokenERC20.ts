@@ -176,42 +176,30 @@ describe("CONTRACT:TokenERC20", function () {
       expect(await tkn.totalSupply()).to.equal(totalSupply.add(100));
     });
 
-    // it("Should burn correctly", async function () {
-    //   const { tkn } = await loadFixture(deployTokenERC20);
-    //   expect(await tkn.symbol()).to.equal(SYMBOL);
-    // });
+    it("Should burn correctly", async function () {
+      const { tkn, acc1, acc2, owner } = await loadFixture(deployTokenERC20);
+
+      const ownerBalance = await tkn.balanceOf(owner.address);
+      const totalSupply = await tkn.totalSupply();
+
+      // 1. revert with errors
+
+      await expect(
+        tkn.connect(owner).burn(owner.address, 100000)
+      ).to.be.revertedWith("insufficient balance");
+
+      await expect(tkn.connect(acc2).burn(acc2.address, 10)).to.be.revertedWith(
+        "only owner"
+      );
+
+      // 2. burn and event
+      await expect(tkn.connect(owner).burn(owner.address, 10))
+        .to.emit(tkn, "Burn")
+        .withArgs(owner.address, 10);
+
+      // 3. compare balances: before and after
+      expect(await tkn.balanceOf(owner.address)).to.equal(ownerBalance.sub(10));
+      expect(await tkn.totalSupply()).to.equal(totalSupply.sub(10));
+    });
   });
 });
-
-// describe("DECREASE-ALLOWANCE", function () {
-//   describe("1. when the spender is not the zero address", function () {
-//     it("when there was no approved amount before", async function () {
-//       const tokensToSend = ethers.utils.parseEther("10");
-//       const { tkn, acc1, acc2 } = await loadFixture(deployTokenERC20);
-
-//       // tkn.transfer(acc1.address, tokensToSend);
-//       expect(await tkn.allowance()).to.equal(tokensToSend);
-//     });
-//   });
-// });
-
-// const tokensToSend = ethers.utils.parseEther("10");
-
-// tkn.transfer(acc1.address, tokensToSend);
-// expect(await tkn.balanceOf(acc1.address)).to.equal(tokensToSend);
-
-// it("Should be able to transfer tokens successfully to an address", async function () {
-//   const tokensToSend = ethers.utils.parseEther("10");
-//   const { tkn, acc1 } = await loadFixture(deployTokenERC20);
-//   tkn.transfer(acc1.address, tokensToSend);
-//   expect(await tkn.balanceOf(acc1.address)).to.equal(tokensToSend);
-// });
-
-// it("emits a transfer event, when an transfer occurs", async function () {
-//   const tokensToSend = ethers.utils.parseEther("10");
-//   const { tkn, acc1, owner } = await loadFixture(deployTokenERC20);
-
-//   expect(await tkn.transfer(acc1.address, tokensToSend))
-//     .to.emit(tkn, "Transfer")
-//     .withArgs(owner.address, acc1.address, tokensToSend);
-// });

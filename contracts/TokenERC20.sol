@@ -347,27 +347,27 @@ contract TokenERC20 {
      * - `to` cannot be the zero address.
      * - `from` must have a balance of at least `amount`.
      */
-    function _transfer(
-        address _from,
-        address _to,
-        uint256 _value
-    ) internal {
-        require(_from != address(0), "ERC20: zero address");
-        require(_to != address(0), "ERC20: zero address");
-        // Prevent transfer to 0x0 address. Use burn() instead
-        require(_to != address(0x0));
-        // Check if the sender has enough
-        require(_balances[_from] >= _value);
-        // Check for overflows
-        require(_balances[_to] + _value >= _balances[_to]);
-        // Save this for an assertion in the future
-        uint256 previousBalances = _balances[_from] + _balances[_to];
-        // Subtract from the sender
-        _balances[_from] -= _value;
-        // Add the same to the recipient
-        _balances[_to] += _value;
-        emit Transfer(_from, _to, _value);
-        // Asserts are used to use static analysis to find bugs in your code. They should never fail
-        assert(_balances[_from] + _balances[_to] == previousBalances);
-    }
+    // function _transfer(
+    //     address _from,
+    //     address _to,
+    //     uint256 _value
+    // ) internal {
+    //     require(_from != address(0), "ERC20: zero address");
+    //     require(_to != address(0), "ERC20: zero address");
+    //     // Prevent transfer to 0x0 address. Use burn() instead
+    //     require(_to != address(0x0));
+    //     // Check if the sender has enough
+    //     require(_balances[_from] >= _value);
+    //     // Check for overflows
+    //     require(_balances[_to] + _value >= _balances[_to]);
+    //     // Save this for an assertion in the future
+    //     uint256 previousBalances = _balances[_from] + _balances[_to];
+    //     // Subtract from the sender
+    //     _balances[_from] -= _value;
+    //     // Add the same to the recipient
+    //     _balances[_to] += _value;
+    //     emit Transfer(_from, _to, _value);
+    //     // Asserts are used to use static analysis to find bugs in your code. They should never fail
+    //     assert(_balances[_from] + _balances[_to] == previousBalances);
+    // }
 }

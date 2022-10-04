@@ -1,22 +1,19 @@
 import { ethers } from "hardhat";
 
+const OWNER_ADDRESS = process.env.OWNER_ADDRESS;
+
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const deployer = OWNER_ADDRESS;
+  console.log("Deploying contract with the account:", deployer);
 
-  const lockedAmount = ethers.utils.parseEther("1");
+  const ERC20 = await ethers.getContractFactory("ERC20");
+  const erc20 = await ERC20.deploy("Kinky", "KNK");
 
-  const Lock = await ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  await erc20.deployed();
 
-  await lock.deployed();
-
-  console.log(`Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`);
+  console.log("ERC20 deployed to:", erc20.address);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;

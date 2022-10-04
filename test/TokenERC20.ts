@@ -1,7 +1,6 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { TokenERC20 } from "../typechain-types";
 
 describe("CONTRACT:TokenERC20", function () {
   const NAME = "Kinky";

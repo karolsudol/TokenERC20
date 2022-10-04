@@ -87,10 +87,71 @@ describe("CONTRACT:TokenERC20", function () {
       ).to.be.revertedWith("ERC20: zero address");
     });
 
-    it("Should transfer from contract correctly", async function () {
+    it("Should transfer to/from address correctly", async function () {
       const { tkn, owner, acc1 } = await loadFixture(deployTokenERC20);
 
- 
+      // Initial Balances
+      const balanceOfOwner = await tkn.balanceOf(owner.address);
+      const balanceOfAcc1 = await tkn.balanceOf(acc1.address);
+
+      // Send Tx(100) owner -> acc1
+      expect(await tkn.transfer(acc1.address, 100))
+        .emit(tkn, "Transfer")
+        .withArgs(owner.address, acc1.address, 100);
+
+      // check new balances
+      expect(await tkn.balanceOf(owner.address)).to.equal(
+        balanceOfOwner.sub(100)
+      );
+      expect(await tkn.balanceOf(acc1.address)).to.equal(
+        balanceOfAcc1.add(100)
+      );
+
+      // zero reverts
+      await expect(
+        tkn.connect(owner).transfer(ZERO_ADDRESS, 100)
+      ).to.be.revertedWith("ERC20: zero address");
+
+      // insufficient funds reverts
+      await expect(
+        tkn.connect(acc1).transfer(owner.address, 200)
+      ).to.be.revertedWith("sender's funds insufficient");
+    });
+
+    it("Should transfer from address to address correctly", async function () {
+      const { tkn, owner, acc1, acc2 } = await loadFixture(deployTokenERC20);
+
+      // Initial Balances
+      const balanceOfOwner = await tkn.balanceOf(owner.address);
+      const balanceOfAcc1 = await tkn.balanceOf(acc1.address);
+      const balanceOfAcc2 = await tkn.balanceOf(acc2.address);
+
+      // revert -> allowance too low
+      await expect(
+        tkn.connect(acc1).transferFrom(owner.address, acc2.address, 100)
+      ).to.be.revertedWith("receipient's allowance insufficient");
+
+      // increase allowance -> same tx but revert again as senders balance insuffient
+      tkn.connect(owner).increaseAllowance(acc1.address, 200);
+      await expect(
+        tkn.connect(acc1).transferFrom(owner.address, acc2.address, 1000)
+      ).to.be.revertedWith("sender's balance insufficient");
+
+      // lower amount -> now transfer should be success with event
+      expect(
+        await tkn.connect(acc1).transferFrom(owner.address, acc2.address, 100)
+      )
+        .emit(tkn, "Transfer")
+        .withArgs(owner.address, acc1.address, 100);
+
+      // now check balances if correct
+      expect(await tkn.balanceOf(owner.address)).to.equal(
+        balanceOfOwner.sub(100)
+      );
+
+      expect(await tkn.balanceOf(acc2.address)).to.equal(
+        balanceOfAcc2.add(100)
+      );
     });
   });
 });

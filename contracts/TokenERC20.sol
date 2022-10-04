@@ -152,7 +152,7 @@ contract TokenERC20 {
      * @dev Moves `amount` tokens from the caller's account to `to`.
      *
      * @param _to receipent address
-     * @param _to _amount to be transfered
+     * @param _amount _amount to be transfered
      *
      * @return a boolean value indicating whether the operation succeeded.
      *
@@ -168,7 +168,7 @@ contract TokenERC20 {
             _balances[msg.sender] >= _amount,
             "sender's funds insufficient"
         );
-        require(_to != address(0), "zero address");
+        require(_to != address(0), "ERC20: zero address");
 
         _balances[msg.sender] -= _amount;
         _balances[_to] += _amount;
@@ -348,8 +348,8 @@ contract TokenERC20 {
         address _to,
         uint256 _value
     ) internal {
-        require(_from != address(0), "ERC20: transfer from the zero address");
-        require(_to != address(0), "ERC20: transfer to the zero address");
+        require(_from != address(0), "ERC20: zero address");
+        require(_to != address(0), "ERC20: zero address");
         // Prevent transfer to 0x0 address. Use burn() instead
         require(_to != address(0x0));
         // Check if the sender has enough

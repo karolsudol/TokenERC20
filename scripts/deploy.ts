@@ -6,8 +6,8 @@ async function main() {
   const deployer = OWNER_ADDRESS;
   console.log("Deploying contract with the account:", deployer);
 
-  const ERC20 = await ethers.getContractFactory("ERC20");
-  const erc20 = await ERC20.deploy("Kinky", "KNK");
+  const TokenERC20 = await ethers.getContractFactory("TokenERC20");
+  const erc20 = await TokenERC20.deploy("Kinky", "KNK");
 
   await erc20.deployed();
 

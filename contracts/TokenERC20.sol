@@ -39,14 +39,14 @@ contract TokenERC20 {
      *
      * Note that `value` may be zero.
      */
-    event Burn(address indexed from, uint256 value);
+    // event Burn(address indexed from, uint256 value);
 
     /**
      * @dev Emitted when `value` tokens are created and allocated to account
      *
      * Note that `value` may be zero.
      */
-    event Mint(address indexed to, uint256 value);
+    // event Mint(address indexed to, uint256 value);
 
     /**
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
@@ -277,7 +277,7 @@ contract TokenERC20 {
             // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
             _balances[account] += amount;
         }
-        emit Mint(account, amount);
+        emit Transfer(address(this), account, amount);
         return true;
     }
 
@@ -298,7 +298,7 @@ contract TokenERC20 {
 
         _balances[_account] -= _amount;
         _totalSupply -= _amount;
-        emit Burn(_account, _amount);
+        emit Transfer(_account, address(this), _amount);
 
         return true;
     }

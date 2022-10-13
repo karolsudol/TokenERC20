@@ -22,7 +22,7 @@ task("BALANCE", "prints an account's balance")
   .setAction(async (taskArgs: { account: any }, hre) => {
     const account = taskArgs.account;
     const contract = await hre.ethers.getContractAt(
-      "ERC20",
+      "TokenERC20",
       ERC20_CONTRACT_ADDRESS
     );
     const balance = await contract.balanceOf(account);
@@ -36,7 +36,7 @@ task("MINT", "Transfers tokens to a given account")
   .setAction(async (taskArgs: { account: any; amount: any }, hre) => {
     const account = taskArgs.account;
     const contract = await hre.ethers.getContractAt(
-      "ERC20",
+      "TokenERC20",
       ERC20_CONTRACT_ADDRESS
     );
     const amount = hre.ethers.utils.parseUnits(
@@ -56,7 +56,7 @@ task("TRANSFER", "Transfers tokens to a given account")
   .setAction(async (taskArgs: { account: any; amount: any }, hre) => {
     const account = taskArgs.account;
     const contract = await hre.ethers.getContractAt(
-      "ERC20",
+      "TokenERC20",
       ERC20_CONTRACT_ADDRESS
     );
     const amount = hre.ethers.utils.parseUnits(
@@ -78,7 +78,7 @@ task(
   .setAction(
     async (taskArgs: { recipient: any; sender: any; amount: any }, hre) => {
       const contract = await hre.ethers.getContractAt(
-        "ERC20",
+        "TokenERC20",
         ERC20_CONTRACT_ADDRESS
       );
       const amount = hre.ethers.utils.parseUnits(
@@ -100,7 +100,7 @@ task("APPROVE", "Aprove allowance of an address")
   .setAction(async (taskArgs: { account: any }, hre) => {
     const account = taskArgs.account;
     const contract = await hre.ethers.getContractAt(
-      "ERC20",
+      "TokenERC20",
       ERC20_CONTRACT_ADDRESS
     );
     const signer = await hre.ethers.getSigners();
@@ -114,7 +114,7 @@ task("ALLOWANCE", "Show allowance of an address")
   .setAction(async (taskArgs: { account: any }, hre) => {
     const account = taskArgs.account;
     const contract = await hre.ethers.getContractAt(
-      "ERC20",
+      "TokenERC20",
       ERC20_CONTRACT_ADDRESS
     );
     const signer = await hre.ethers.getSigners();
@@ -129,7 +129,7 @@ task("IncreaseAllowance", "Increase allowance for an address")
   .setAction(async (taskArgs: { account: any; amount: any }, hre) => {
     const account = taskArgs.account;
     const contract = await hre.ethers.getContractAt(
-      "ERC20",
+      "TokenERC20",
       ERC20_CONTRACT_ADDRESS
     );
     const amount = hre.ethers.utils.parseUnits(
@@ -149,7 +149,7 @@ task("DecreaseAllowance", "Decrease allowance for an address")
   .setAction(async (taskArgs: { account: any; amount: any }, hre) => {
     const account = taskArgs.account;
     const contract = await hre.ethers.getContractAt(
-      "ERC20",
+      "TokenERC20",
       ERC20_CONTRACT_ADDRESS
     );
     const amount = hre.ethers.utils.parseUnits(

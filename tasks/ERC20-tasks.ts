@@ -17,7 +17,7 @@ task("ACCOUNTS", "prints accounts' addreaddresssses").setAction(
   }
 );
 
-task("BALANCE", "prints an account's balance")
+task("BALANCE", "Prints an account's balance")
   .addParam("account", "The account's address")
   .setAction(async (taskArgs: { account: any }, hre) => {
     const account = taskArgs.account;

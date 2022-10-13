@@ -2,11 +2,6 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 
 import "./tasks/ERC20-tasks.ts";
-
-// import "./scripts/deploy";
-// export *  "./verify-etherscan";
-// export * from "./ERC20-tasks";
-// import * as dotenv from "dotenv";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -20,9 +15,6 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
-    // Add these lines -----------
-
-    // ---------------------------
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

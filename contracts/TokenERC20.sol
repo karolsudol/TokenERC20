@@ -277,7 +277,7 @@ contract TokenERC20 {
             // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
             _balances[account] += amount;
         }
-        emit Transfer(address(this), account, amount);
+        emit Transfer(address(0), account, amount);
         return true;
     }
 
@@ -298,7 +298,7 @@ contract TokenERC20 {
 
         _balances[_account] -= _amount;
         _totalSupply -= _amount;
-        emit Transfer(_account, address(this), _amount);
+        emit Transfer(_account, address(0), _amount);
 
         return true;
     }

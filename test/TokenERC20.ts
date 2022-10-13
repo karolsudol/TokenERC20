@@ -184,8 +184,8 @@ describe("CONTRACT:TokenERC20", function () {
 
       // 2. Mint Event
       await expect(tkn.mint(acc1.address, 100))
-        .to.emit(tkn, "Mint")
-        .withArgs(acc1.address, 100);
+        .to.emit(tkn, "Transfer")
+        .withArgs(ZERO_ADDRESS, acc1.address, 100);
 
       // 3. compare balances: before and after
       expect(await tkn.balanceOf(acc1.address)).to.equal(acc1Balance.add(100));
@@ -210,8 +210,8 @@ describe("CONTRACT:TokenERC20", function () {
 
       // 2. burn and event
       await expect(tkn.connect(owner).burn(owner.address, 10))
-        .to.emit(tkn, "Burn")
-        .withArgs(owner.address, 10);
+        .to.emit(tkn, "Transfer")
+        .withArgs(owner.address, ZERO_ADDRESS, 10);
 
       // 3. compare balances: before and after
       expect(await tkn.balanceOf(owner.address)).to.equal(ownerBalance.sub(10));

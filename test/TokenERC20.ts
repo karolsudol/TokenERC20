@@ -47,10 +47,6 @@ describe("CONTRACT:TokenERC20", function () {
   });
 
   describe("TRANSFERS", function () {
-    it("Should be able to do transfers between accounts correctly", async function () {
-      const { tkn, owner, acc1, acc2 } = await loadFixture(deployTokenERC20);
-    });
-
     it("Should be able to in-crease allowance correctly", async function () {
       const { tkn, owner, acc1 } = await loadFixture(deployTokenERC20);
       const allowance_0 = await tkn.allowance(owner.address, acc1.address);

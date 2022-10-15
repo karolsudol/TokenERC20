@@ -3,7 +3,6 @@ import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-ethers";
 import * as dotenv from "dotenv";
 dotenv.config();
-
 const ERC20_CONTRACT_ADDRESS: string = process.env
   .ERC20_CONTRACT_ADDRESS as string;
 

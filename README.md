@@ -4,6 +4,7 @@
 - The contract conforms to the `ERC-20 standard` as includes all the functions and events described in the standard, while keeping their names.
 
 - Deployed and Verified on [sepolia](https://sepolia.etherscan.io/address/0xa883d9C6F7FC4baB52AcD2E42E51c4c528d7F7D3)
+- with [owner](https://sepolia.etherscan.io/address/0x741e0608906B74B8754a99413A7374FdE7B9779a)
 
 ## hardhat tasks:
 

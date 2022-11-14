@@ -1,6 +1,6 @@
 # TokenERC20
 
-- A `hadhat` unit tested `ERC20` token that has been 100% covared with `mint/burn` features for contract creator without using libraries.
+- A `hardhat` unit tested `ERC20` token that has been 100% covared with `mint/burn` features for contract creator without using libraries.
 - The contract conforms to the `ERC-20 standard` as includes all the functions and events described in the standard, while keeping their names.
 
 - Deployed and Verified on [sepolia](https://sepolia.etherscan.io/address/0xa883d9C6F7FC4baB52AcD2E42E51c4c528d7F7D3)
@@ -8,6 +8,7 @@
 
 ## hardhat tasks:
 
+- `npm install hardhat`
 - `npx hardhat coverage`
 - `npx hardhat run scripts/deploy.ts --network sepolia`
 - `npx hardhat ACCOUNTS --network sepolia`

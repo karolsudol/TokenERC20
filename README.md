@@ -20,7 +20,7 @@
 
 <br/>
 <p align="center">
-<img src="img/coveage.png">
+<img src="img/coverage.png">
 </a>
 </p>
 <br/>

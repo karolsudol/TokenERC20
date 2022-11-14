@@ -1,15 +1,15 @@
-# Sample Hardhat Project
+# TokenERC20
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+An unit tested `ERC20` token that has been 100% covared with `mint/burn` features for contract creator without using libraries.
+The contract conforms to the `ERC-20 standard` as includes all the functions and events described in the standard, while keeping their names.
 
-Try running some of the following tasks:
+Deployed and Verified on `https://sepolia.etherscan.io/address/0xa883d9C6F7FC4baB52AcD2E42E51c4c528d7F7D3`
+
+with hardhat tasks as:
 
 ```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts --netwrok sepolia
+npx hardhat coverage
+npx hardhat run scripts/deploy.ts --network sepolia
 npx hardhat ACCOUNTS --network sepolia
 npx hardhat BALANCE --network sepolia --account 0x741e0608906B74B8754a99413A7374FdE7B9779a
 npx hardhat ALLOWANCE --network sepolia --account 0xb5dF6F49291573d8FF3b06E3d8e25B95EDB419EE
